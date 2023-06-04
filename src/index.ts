@@ -1,10 +1,8 @@
 import { app, Tray, Menu, MenuItem } from 'electron';
 
 import { initializeSettings, openSettingsWindow } from './utils/settings';
-import { initializeSettings } from './utils/settings';
-
-declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
-declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
+import { refresh } from './utils';
+import { REFRESH_INTERVAL } from './config';
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -27,4 +25,6 @@ app.on('ready', () => {
   contextMenu.append(new MenuItem({ role: 'quit' }))
   tray.setContextMenu(contextMenu);
 
+  refresh(tray)
+  setInterval(refresh, REFRESH_INTERVAL, tray)
 });

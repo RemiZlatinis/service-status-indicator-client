@@ -11,3 +11,5 @@ export const INITIAL_SETTINGS: Settings = {
   token: "",
   url: "http://localhost:8000/"
 }
+
+export const REFRESH_INTERVAL = 10_000 // 10 seconds
