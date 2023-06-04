@@ -1,8 +1,17 @@
+import path from "path"
 import { Menu, MenuItem, Tray, nativeImage } from "electron";
 
 import { GetServicesResponse, getServices } from "../api";
 import { openSettingsWindow } from "./settings";
 
+type Status = 'ok' | 'update' | 'warning' | 'failure'
+
+let STATUS: Status | "error" = "error"
+let FAILURE_MODE = false
+
+export function getImagePath(filename: string) {
+  return path.join(__dirname, `assets/${filename}.png`)
+}
 
 export function getContextMenu(services: GetServicesResponse) {
   const contextMenu = new Menu
@@ -11,17 +20,17 @@ export function getContextMenu(services: GetServicesResponse) {
       type: 'normal',
       label,
       icon: nativeImage
-        .createFromPath(`src/assets/${serviceStatus}.png`)
+        .createFromPath(getImagePath(serviceStatus))
         .resize({ height: 16, width: 16 })
     }))
   })
   return contextMenu
 }
 
-export function getStatus(services: GetServicesResponse) {
+export function getStatus(services: GetServicesResponse): Status | "error" {
   if (!services) return "error"
 
-  let status: 'ok' | 'update' | 'warning' | 'failure' = 'ok'
+  let status: Status = "ok"
 
   const STATUS_PRIORITY = {
     ok: 0,
@@ -41,16 +50,19 @@ export function getStatus(services: GetServicesResponse) {
 
 export async function refresh(tray: Tray) {
   let contextMenu = new Menu;
-  tray.setImage(`src/assets/server-refresh.png`)
+  tray.setImage(getImagePath("server-refresh"))
   try {
     const services = await getServices();
-    const status = getStatus(services)
-    tray.setImage(`src/assets/server-${status}.png`)
+    STATUS = getStatus(services)
+
+    if (STATUS === "failure" && !FAILURE_MODE) setTrayIconToFailureBlink(tray)
+    else tray.setImage(getImagePath("server-" + STATUS))
+
     contextMenu = getContextMenu(services)
     contextMenu.append(new MenuItem({ type: 'separator' }))
   } catch (error) {
     console.error(error);
-    tray.setImage('src/assets/server-error.png')
+    tray.setImage(getImagePath("server-error"))
   } finally {
     contextMenu.append(new MenuItem({
       label: 'Settings', click: () => {
@@ -61,3 +73,21 @@ export async function refresh(tray: Tray) {
     tray.setContextMenu(contextMenu);
   }
 }
+
+async function setTrayIconToFailureBlink(tray: Tray) {
+  FAILURE_MODE = true
+  const delay = 300 // ms
+  let phase = true
+
+  function sleep(ms: number) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  while (STATUS === "failure") {
+    tray.setImage(getImagePath(phase ? "server" : "server-failure"))
+    phase = !phase
+    await sleep(delay)
+  }
+  FAILURE_MODE = false
+}
+

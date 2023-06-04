@@ -1,7 +1,7 @@
 import { app, Tray, Menu, MenuItem, ipcMain } from 'electron';
 
 import { initializeSettings, openSettingsWindow, readSettings, saveSettings } from './utils/settings';
-import { refresh } from './utils';
+import { getImagePath, refresh } from './utils';
 import { REFRESH_INTERVAL } from './config';
 import { Settings } from './models';
 
@@ -18,7 +18,7 @@ if (!gotTheLock) {
   app.quit();
 } else {
   app.on('ready', () => {
-    const tray = new Tray('src/assets/server.png');
+    const tray = new Tray(getImagePath("server"));
 
     let contextMenu = new Menu;
 
