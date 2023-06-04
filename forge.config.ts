@@ -9,9 +9,34 @@ import { mainConfig } from './webpack.main.config';
 import { rendererConfig } from './webpack.renderer.config';
 
 const config: ForgeConfig = {
-  packagerConfig: {},
+  packagerConfig: {
+    name: "Service Status Indicator Client",
+    executableName: "service-status-indicator-client",
+    icon: 'src/assets/server-ok',
+  },
   rebuildConfig: {},
-  makers: [new MakerSquirrel({}), new MakerZIP({}, ['darwin']), new MakerRpm({}), new MakerDeb({})],
+  makers: [
+    new MakerSquirrel({
+      setupIcon: "src/assets/server-ok.ico",
+      iconUrl: "https://res.cloudinary.com/dpyznz7dm/image/upload/v1685806431/service-status-indicator/server-ok_tqqujk.ico"
+    }),
+    new MakerZIP({}, ['darwin', 'linux']),
+    new MakerRpm({}),
+    new MakerDeb({})
+  ],
+  publishers: [
+    {
+      name: "@electron-forge/publisher-github",
+      config: {
+        repository: {
+          owner: 'RemiZlatinis',
+          name: 'service-status-indicator-client'
+        },
+        prerelease: true,
+        draft: true
+      }
+    }
+  ],
   plugins: [
     new WebpackPlugin({
       mainConfig,
