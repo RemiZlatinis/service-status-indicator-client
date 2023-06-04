@@ -12,23 +12,30 @@ if (require('electron-squirrel-startup')) {
 
 initializeSettings()
 
-app.on('ready', () => {
-  const tray = new Tray('src/assets/server.png');
+const gotTheLock = app.requestSingleInstanceLock();
 
-  let contextMenu = new Menu;
+if (!gotTheLock) {
+  app.quit();
+} else {
+  app.on('ready', () => {
+    const tray = new Tray('src/assets/server.png');
 
-  tray.on('click', event => {
-    tray.popUpContextMenu();
+    let contextMenu = new Menu;
+
+    tray.on('click', event => {
+      tray.popUpContextMenu();
+    });
+
+    contextMenu.append(new MenuItem({
+      label: 'Settings', click: openSettingsWindow
+    }))
+    contextMenu.append(new MenuItem({ role: 'quit' }))
+    tray.setContextMenu(contextMenu);
+
+    refresh(tray)
+    setInterval(refresh, REFRESH_INTERVAL, tray)
   });
-
-  contextMenu.append(new MenuItem({
-    label: 'Settings', click: openSettingsWindow }))
-  contextMenu.append(new MenuItem({ role: 'quit' }))
-  tray.setContextMenu(contextMenu);
-
-  refresh(tray)
-  setInterval(refresh, REFRESH_INTERVAL, tray)
-});
+}
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
