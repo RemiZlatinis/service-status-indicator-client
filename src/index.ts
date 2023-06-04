@@ -28,3 +28,9 @@ app.on('ready', () => {
   refresh(tray)
   setInterval(refresh, REFRESH_INTERVAL, tray)
 });
+
+app.on('window-all-closed', () => {
+  if (process.platform !== 'darwin') {
+    app.quit();
+  }
+});
