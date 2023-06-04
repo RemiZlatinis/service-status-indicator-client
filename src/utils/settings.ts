@@ -61,3 +61,15 @@ export function openSettingsWindow() {
     settingsWindow = null;
   });
 }
+
+export function saveSettings(app: Electron.App, settings: Partial<Settings>) {
+  try {
+    fs.writeFileSync(SETTINGS_FILE_PATH, JSON.stringify({ ...readSettings(), ...settings }));
+    updateAPISettings(settings)
+    app.setLoginItemSettings({
+      openAtLogin: settings.openAtLogin
+    })
+  } catch (error) {
+    console.log(`Error on save settings: ${error}`)
+  }
+}

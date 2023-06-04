@@ -1,8 +1,9 @@
-import { app, Tray, Menu, MenuItem } from 'electron';
+import { app, Tray, Menu, MenuItem, ipcMain } from 'electron';
 
-import { initializeSettings, openSettingsWindow } from './utils/settings';
+import { initializeSettings, openSettingsWindow, readSettings, saveSettings } from './utils/settings';
 import { refresh } from './utils';
 import { REFRESH_INTERVAL } from './config';
+import { Settings } from './models';
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -34,3 +35,6 @@ app.on('window-all-closed', () => {
     app.quit();
   }
 });
+
+ipcMain.handle('get-settings', readSettings);
+ipcMain.handle('save-settings', (e, s) => saveSettings(app, s as Settings));
