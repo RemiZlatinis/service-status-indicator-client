@@ -69,6 +69,7 @@ export function saveSettings(app: Electron.App, settings: Partial<Settings>) {
     app.setLoginItemSettings({
       openAtLogin: settings.openAtLogin
     })
+    settingsWindow.close()
   } catch (error) {
     console.log(`Error on save settings: ${error}`)
   }
