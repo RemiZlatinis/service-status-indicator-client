@@ -2,7 +2,7 @@
   "name": "service-status-indicator-client",
   "productName": "service-status-indicator-client",
   "version": "1.0.0",
-  "description": "My Electron application description",
+  "description": "Simple monitoring tool for your Linux server",
   "main": ".webpack/main",
   "scripts": {
     "start": "electron-forge start",
