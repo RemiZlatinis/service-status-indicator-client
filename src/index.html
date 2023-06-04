@@ -5,20 +5,28 @@
     <title>Settings</title>
   </head>
   <body>
-    <div>
+    <div class="container">
       <div>
-        <label for="url">URL</label>
-        <div>
-          <input type="text" id="url" name="url" required />
+        <label class="label" for="url">URL</label>
+        <div class="input-container">
+          <input class="text-input" type="text" id="url" name="url" required />
         </div>
-        <label for="token">Token</label>
-        <div>
-          <input type="text" id="token" name="token" required />
+      </div>
+      <div>
+        <label class="label" for="token">Token</label>
+        <div class="input-container">
+          <input
+            class="text-input"
+            type="text"
+            id="token"
+            name="token"
+            required
+          />
         </div>
-        <div>
-          Auto start
-          <input type="checkbox" id="openAtLogin" name="openAtLogin" required />
-        </div>
+      </div>
+      <div class="label">
+        Auto start
+        <input type="checkbox" id="openAtLogin" name="openAtLogin" required />
         <button id="save">Save</button>
       </div>
     </div>
