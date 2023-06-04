@@ -25,7 +25,7 @@
     "name": "Remi Zlatinis",
     "email": "remizlatinis@gmail.com"
   },
-  "license": "MIT",
+  "license": "GPLv2",
   "devDependencies": {
     "@electron-forge/cli": "^6.1.1",
     "@electron-forge/maker-deb": "^6.1.1",
